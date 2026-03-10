@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#D4AF37"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Resonansi"/>
+<title>RESONANSI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English&family=IBM+Plex+Mono:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100%;background:#0D0D0F;color:#E8E6E0;font-family:'IM Fell English','Georgia',serif;}
+button{font-family:inherit;cursor:pointer;}
+textarea,input{font-family:inherit;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(212,175,55,0.3);border-radius:2px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+.fade-up{animation:fadeUp 0.35s ease forwards;}
+.spin{display:inline-block;animation:spin 1.2s linear infinite;}
+.blink{animation:blink 0.7s step-end infinite;color:#D4AF37;}
+.dot{width:6px;height:6px;background:#D4AF37;border-radius:50%;display:inline-block;animation:pulse 2s infinite;}
+#app{min-height:100vh;display:flex;flex-direction:column;}
+.screen{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{width:100%;max-width:420px;border:1px solid rgba(212,175,55,0.22);border-radius:16px;padding:32px 24px;background:rgba(212,175,55,0.03);}
+.logo{font-size:36px;color:#D4AF37;text-align:center;margin-bottom:6px;}
+.title{text-align:center;font-size:20px;letter-spacing:5px;margin-bottom:4px;}
+.subtitle{text-align:center;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.28);font-family:'IBM Plex Mono',monospace;margin-bottom:26px;}
+.lbl{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.28);font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:7px;}
+.inp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px 15px;color:#E8E6E0;font-size:14px;font-family:'IBM Plex Mono',monospace;outline:none;letter-spacing:1px;}
+.inp:focus{border-color:rgba(212,175,55,0.45);}
+.note{font-size:10px;color:rgba(255,255,255,0.22);font-family:'IBM Plex Mono',monospace;margin-top:9px;line-height:1.65;}
+.note a{color:rgba(212,175,55,0.55);text-decoration:none;}
+.btn-gold{width:100%;background:#D4AF37;color:#0D0D0F;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;letter-spacing:1px;margin-top:18px;}
+.btn-gold:disabled{opacity:0.3;cursor:not-allowed;}
+.err{color:#FF6B6B;font-size:11px;font-family:'IBM Plex Mono',monospace;margin-top:9px;text-align:center;}
+.hdr{display:flex;align-items:center;gap:12px;padding:13px 17px;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;background:#0D0D0F;z-index:20;}
+.hdr-logo{font-size:19px;color:#D4AF37;}
+.hdr-title{font-size:15px;letter-spacing:4px;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.28);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+.hdr-actions{margin-left:auto;display:flex;gap:6px;}
+.hdr-btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);padding:6px 10px;border-radius:4px;font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.hdr-btn.on{border-color:rgba(212,175,55,0.5);color:rgba(212,175,55,0.8);}
+.id-panel{background:rgba(212,175,55,0.03);border-bottom:1px solid rgba(212,175,55,0.12);padding:18px;animation:fadeUp 0.3s ease;}
+.id-title{font-size:10px;letter-spacing:3px;color:rgba(212,175,55,0.7);font-family:'IBM Plex Mono',monospace;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.id-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.22);border-radius:20px;padding:3px 9px;font-size:8px;font-family:'IBM Plex Mono',monospace;color:rgba(212,175,55,0.65);letter-spacing:1px;}
+.id-note{font-size:11px;color:rgba(255,255,255,0.32);font-family:'IBM Plex Mono',monospace;line-height:1.7;margin-bottom:13px;}
+.id-lbl{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.28);font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:6px;}
+.id-ta{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px 12px;color:#E8E6E0;font-size:12px;font-family:'IBM Plex Mono',monospace;resize:none;line-height:1.65;outline:none;margin-bottom:12px;}
+.id-ta:focus{border-color:rgba(212,175,55,0.35);}
+.id-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.btn-save{background:#D4AF37;color:#0D0D0F;border:none;border-radius:5px;padding:9px 18px;font-size:12px;font-weight:700;letter-spacing:1px;}
+.btn-sec{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.28);border-radius:5px;padding:9px 13px;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.plat-bar{display:flex;border-bottom:1px solid rgba(255,255,255,0.07);overflow-x:auto;}
+.plat-tab{flex:1;min-width:80px;padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;background:transparent;border:none;border-bottom:2px solid transparent;transition:all 0.2s;color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:1px;font-family:'IBM Plex Mono',monospace;}
+.plat-tab svg{width:20px;height:20px;}
+.content{flex:1;padding:17px;display:flex;flex-direction:column;gap:15px;max-width:680px;width:100%;margin:0 auto;}
+.fg{display:flex;flex-direction:column;gap:7px;}
+.fl{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.28);font-family:'IBM Plex Mono',monospace;font-weight:700;}
+.divider{height:1px;background:rgba(255,255,255,0.06);}
+.tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tone-btn{padding:10px 12px;border-radius:7px;border:1px solid;text-align:left;display:flex;flex-direction:column;gap:3px;transition:all 0.2s;background:transparent;}
+.tone-name{font-size:12px;font-weight:700;}
+.tone-desc{font-size:10px;opacity:0.5;font-family:'IBM Plex Mono',monospace;line-height:1.3;}
+.x-badge{border:1px solid rgba(231,233,234,0.14);border-radius:8px;padding:13px 15px;background:rgba(231,233,234,0.03);}
+.x-badge-hdr{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.x-badge-title{font-size:12px;font-weight:700;color:#E7E9EA;}
+.x-badge-body{font-size:11px;line-height:1.75;color:rgba(255,255,255,0.38);font-family:'IBM Plex Mono',monospace;margin-bottom:9px;}
+.x-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.x-tag{font-size:9px;padding:3px 8px;border:1px solid rgba(231,233,234,0.16);border-radius:20px;color:rgba(231,233,234,0.48);font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.ctx-row{display:flex;flex-direction:column;gap:7px;}
+.ctx-btn{padding:10px 14px;border-radius:7px;border:1px solid;text-align:left;font-size:12px;transition:all 0.2s;background:transparent;}
+.ctx-btn-x{padding:10px 14px;border-radius:7px;border:1px solid;text-align:left;transition:all 0.2s;display:flex;flex-direction:column;gap:3px;background:transparent;}
+.ctx-btn-x-name{font-size:12px;font-weight:600;}
+.ctx-btn-x-desc{font-size:10px;opacity:0.46;font-family:'IBM Plex Mono',monospace;line-height:1.4;}
+.ta-main{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:13px 15px;color:#E8E6E0;font-size:15px;resize:none;line-height:1.7;outline:none;}
+.ta-main:focus{border-color:rgba(212,175,55,0.38);}
+.ta-main::placeholder{color:rgba(255,255,255,0.16);}
+.ta-extra{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:7px;padding:9px 12px;color:#E8E6E0;font-size:12px;resize:none;line-height:1.6;outline:none;font-family:'IBM Plex Mono',monospace;}
+.ta-extra:focus{border-color:rgba(212,175,55,0.3);}
+.ta-extra::placeholder{color:rgba(255,255,255,0.13);}
+.input-meta{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.char-ct{font-size:11px;color:rgba(255,255,255,0.2);font-family:'IBM Plex Mono',monospace;}
+.btn-gen{background:#D4AF37;color:#0D0D0F;border:none;border-radius:7px;padding:12px 22px;font-size:14px;font-weight:700;letter-spacing:0.5px;}
+.btn-gen:disabled{opacity:0.28;cursor:not-allowed;}
+.out-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:16px 17px;display:flex;flex-direction:column;gap:12px;animation:fadeUp 0.35s ease;}
+.out-hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.out-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.out-lbl{font-size:9px;letter-spacing:2px;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,0.35);font-weight:700;}
+.out-text{font-size:15px;line-height:1.9;white-space:pre-wrap;}
+.btn-copy{background:transparent;border:1px solid rgba(255,255,255,0.13);color:rgba(255,255,255,0.48);padding:5px 12px;border-radius:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;white-space:nowrap;}
+.out-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-regen{background:transparent;border:1px solid rgba(212,175,55,0.26);color:rgba(212,175,55,0.62);padding:8px 16px;border-radius:5px;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.btn-clear{background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.26);padding:8px 16px;border-radius:5px;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0.22;padding:36px 20px;text-align:center;}
+.empty-icon{font-size:40px;color:#D4AF37;}
+.empty-txt{font-size:13px;line-height:1.85;}
+.hist-toggle{display:flex;align-items:center;justify-content:space-between;}
+.btn-hist{background:transparent;border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.33);padding:5px 11px;border-radius:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.hist-list{display:flex;flex-direction:column;gap:6px;margin-top:7px;}
+.hist-item{border:1px solid;border-radius:6px;padding:9px 12px;cursor:pointer;background:rgba(255,255,255,0.02);}
+.hist-plat{font-size:9px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.hist-snip{font-size:11px;color:rgba(255,255,255,0.3);font-family:'IBM Plex Mono',monospace;margin-top:3px;line-height:1.4;}
+.footer{text-align:center;padding:13px;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.12);font-family:'IBM Plex Mono',monospace;border-top:1px solid rgba(255,255,255,0.05);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const DEFAULT_ID={
+  epistemic:`Saya berpijak pada tradisi etika yang dibangun dari pemahaman tentang kejahatan, bukan sekadar mengejar kebaikan — mengikuti pemikiran Adi Ophir bahwa moralitas sejati hanya dapat dibangun ketika kita pertama-tama memahami kejahatan secara serius. Saya percaya bahwa sistem kejahatan bisa berjalan secara ordinary, tanpa dramaturgi, sebagai kelaziman yang tidak dipertanyakan — dan justru di situ letaknya bahaya terbesar. Di sisi lain, saya menyilangkan kerangka ini dengan tasawuf, khususnya Rumi, yang melihat cinta bukan sebagai sentimen melainkan sebagai awal, proses, dan muara dari seluruh keberadaan. Ketidakadilan adalah kejahatan yang paling nyata, dan netralitas tidak mungkin ada di hadapan penderitaan orang lain.`,
+  values:`Saya memegang kerendahan hati epistemik — ada banyak hal yang belum saya ketahui, dan saya tidak akan berpura-pura sebaliknya. Namun kerendahan hati tidak berarti diam. Saya bersedia menyuarakan yang tidak populer, selama berangkat dari nalar, bukan dari ego. Kebenaran diutarakan bukan untuk menghakimi pikiran orang lain, melainkan — seperti Socrates — untuk membantu saya dan lawan bicara melahirkan anak pemikiran yang lebih jernih. Saya adalah bidan gagasan, bukan hakim.`,
+  purpose:`Saya berbicara untuk menemukan kejernihan di tengah riuh suara — dan untuk melahirkan pertanyaan kritis yang mungkin absen dari diskursus yang sedang berlangsung. Saya tidak berbicara untuk menutup perdebatan, melainkan untuk membuka ruang berpikir yang lebih jujur dan lebih dalam.`
+};
+const PLATFORMS=[
+  {id:'wa',label:'WhatsApp',color:'#25D366',border:'rgba(37,211,102,0.28)',hint:'Hangat, personal, bisa beberapa paragraf',
+   svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'},
+  {id:'x',label:'X (Twitter)',color:'#E7E9EA',border:'rgba(231,233,234,0.18)',hint:'Dialog kritis · tidak menghakimi · maks 280 karakter',
+   svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'},
+  {id:'ig',label:'Instagram',color:'#E1306C',border:'rgba(225,48,108,0.28)',hint:'Ekspresif, engaging, 1-2 emoji jika natural',
+   svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>'}
+];
+const TONES=[{id:'philosophical',name:'Filosofis',desc:'Mendalam, reflektif, berbasis argumen'},{id:'critical',name:'Kritis',desc:'Analitis, mempertanyakan asumsi'},{id:'calm',name:'Tenang',desc:'Tidak emosional, jernih, terukur'},{id:'witty',name:'Cerdas & Santai',desc:'Tajam namun ringan, sedikit humor'}];
+const CONTEXTS=[{id:'respond',label:'Menjawab Pertanyaan'},{id:'comment',label:'Menanggapi Komentar'},{id:'counter',label:'Memberikan Kontra-Argumen'},{id:'clarify',label:'Mengklarifikasi Salah Paham'}];
+const CONTEXTS_X=[{id:'x_dialogue',label:'Menjawab / Merespons & Berkomentar',desc:'Jawab pertanyaan atau timpal komentar yang mengundang dialog'},{id:'counter',label:'Kontra-Argumen Dialogis',desc:'Menentang pandangan dengan membuka ruang diskusi'},{id:'clarify',label:'Meluruskan dengan Santun',desc:'Koreksi framing tanpa mempermalukan lawan bicara'}];
+
+let S={
+  screen:localStorage.getItem('rk')?'main':'setup',
+  apiKey:localStorage.getItem('rk')||'',
+  identity:(()=>{try{const s=localStorage.getItem('ri');return s?JSON.parse(s):DEFAULT_ID;}catch{return DEFAULT_ID;}})(),
+  platform:'wa',tone:'philosophical',context:'respond',
+  input:'',extra:'',result:'',loading:false,copied:false,
+  showId:false,showHist:false,history:[],
+  sk:'',serr:'',sload:false,
+  iep:'',ivl:'',ipu:'',
+  tt:'',tdone:false,ttimer:null
+};
+
+function startTW(text){
+  if(S.ttimer)clearInterval(S.ttimer);
+  S.tt='';S.tdone=false;let i=0;
+  S.ttimer=setInterval(()=>{
+    if(i<text.length){S.tt=text.slice(0,i+1);i++;render();}
+    else{S.tdone=true;clearInterval(S.ttimer);render();}
+  },9);
+}
+
+function buildPrompt(){
+  const id=S.identity,pl=PLATFORMS.find(p=>p.id===S.platform),tn=TONES.find(t=>t.id===S.tone);
+  const pI={wa:'Tulis dalam gaya WhatsApp — hangat, personal, bisa lebih dari satu paragraf.',x:'Tulis dalam gaya X/Twitter — MAKSIMAL 280 karakter total, hitung sangat cermat.',ig:'Tulis dalam gaya Instagram — ekspresif, engaging, boleh 1-2 emoji relevan jika natural.'};
+  const tI={philosophical:'Nada filosofis: argumen berbasis prinsip, refleksi mendalam.',critical:'Nada kritis: pertanyakan asumsi tersembunyi, tunjukkan celah logika dengan sopan.',calm:'Nada tenang: tidak emosional, jernih, terukur.',witty:'Nada cerdas & santai: tajam namun ringan, sedikit ironi intelektual.'};
+  const xT='Nada GABUNGAN: filosofis dalam pijakan · kritis dalam membedah asumsi · tenang dalam sikap · cerdas dalam diksi. Pembaca diajak berpikir bersama, bukan diceramahi.';
+  const cI={respond:'JAWAB pertanyaan ini.',comment:'TANGGAPI komentar ini secara konstruktif.',x_dialogue:'JAWAB atau RESPONS — apakah pertanyaan, komentar, atau pernyataan. Buka percakapan.',counter:S.platform==='x'?'Berikan KONTRA-ARGUMEN yang kuat namun dialogis.':'Berikan KONTRA-ARGUMEN yang kuat namun sopan.',clarify:S.platform==='x'?'LURUSKAN salah paham dengan cara yang membuat lawan merasa terbantu.':'KLARIFIKASI salah paham atau framing yang keliru.'};
+  return `Kamu adalah asisten yang membantu pemilik aplikasi ini merespons di media sosial. Tugasmu adalah menulis SEPERTI pemilik ini, sesuai karakter intelektual dan cara berpikirnya yang khas.
+
+═══ KARAKTER INTELEKTUAL PEMILIK ═══
+
+POSISI EPISTEMIK:
+${id.epistemic}
+
+NILAI ARGUMEN:
+${id.values}
+
+TUJUAN BERBICARA:
+${id.purpose}
+
+═══ INSTRUKSI TEKNIS ═══
+
+Platform: ${pl.label}
+${pI[S.platform]}
+
+Nada: ${S.platform==='x'?'Gabungan Terintegrasi':tn.name}
+${S.platform==='x'?xT:tI[S.tone]}
+
+Tujuan: ${cI[S.context]}
+${S.extra?'Konteks situasional: '+S.extra:''}
+
+Pesan yang perlu direspons:
+"${S.input}"
+
+Tulis seperti pemilik ini berbicara sendiri — gunakan "saya" secara natural. Karakter Ophir-Rumi-Socrates harus terasa dalam struktur pikiran dan pilihan kata, bukan sebagai kutipan eksplisit. Berikan HANYA teks respons siap-pakai.`;
+}
+
+async function generate(){
+  if(!S.input.trim()||S.loading)return;
+  S.loading=true;S.result='';S.copied=false;S.tt='';S.tdone=false;render();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1024,messages:[{role:'user',content:buildPrompt()}]})});
+    const d=await res.json();
+    const text=d.content?.map(b=>b.text||'').join('')||'Terjadi kesalahan.';
+    S.result=text;S.history=[{input:S.input,platform:S.platform,tone:S.tone,context:S.context,result:text},...S.history.slice(0,9)];
+    S.loading=false;render();startTW(text);
+  }catch{S.result='Gagal terhubung. Periksa koneksi internet.';S.tt=S.result;S.tdone=true;S.loading=false;render();}
+}
+
+function checkKey(){
+  const k=S.sk.trim();
+  if(!k.startsWith('sk-ant-')){S.serr="Format tidak valid. Harus dimulai dengan 'sk-ant-'";render();return;}
+  localStorage.setItem('rk',k);S.apiKey=k;S.screen='main';render();
+}
+
+function copyResult(){
+  if(!S.result)return;
+  navigator.clipboard.writeText(S.result).then(()=>{S.copied=true;render();setTimeout(()=>{S.copied=false;render();},2200);});
+}
+
+function saveId(){
+  const u={epistemic:S.iep.trim(),values:S.ivl.trim(),purpose:S.ipu.trim()};
+  localStorage.setItem('ri',JSON.stringify(u));S.identity=u;S.showId=false;render();
+}
+
+function setPlatform(id){
+  S.platform=id;
+  if(id==='x')S.context='x_dialogue';
+  else if(S.context==='x_dialogue')S.context='respond';
+  render();
+}
+
+function h(tag,attrs,...kids){
+  const el=document.createElement(tag);
+  if(attrs)Object.entries(attrs).forEach(([k,v])=>{
+    if(k==='className')el.className=v;
+    else if(k.startsWith('on'))el.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==='style')Object.assign(el.style,v);
+    else if(k==='innerHTML')el.innerHTML=v;
+    else el.setAttribute(k,v);
+  });
+  kids.flat().forEach(c=>{if(c==null||c===false)return;el.appendChild(typeof c==='string'?document.createTextNode(c):c);});
+  return el;
+}
+
+function renderSetup(){
+  return h('div',{className:'screen'},
+    h('div',{className:'card fade-up'},
+      h('div',{className:'logo'},'◈'),
+      h('div',{className:'title'},'RESONANSI'),
+      h('div',{className:'subtitle'},'ASISTEN RESPONS INTELEKTUAL'),
+      h('label',{className:'lbl'},'API KEY ANTHROPIC'),
+      h('input',{className:'inp',type:'password',placeholder:'sk-ant-api03-...',value:S.sk,onInput:e=>S.sk=e.target.value,onKeydown:e=>{if(e.key==='Enter')checkKey();},autocomplete:'off',spellcheck:'false'}),
+      h('p',{className:'note',innerHTML:'Buat API key gratis di <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key. Tersimpan hanya di perangkatmu.'}),
+      S.serr?h('p',{className:'err'},S.serr):null,
+      h('button',{className:'btn-gold',onClick:checkKey,disabled:!S.sk.trim()||S.sload},S.sload?'Memeriksa...':'Mulai →')
+    )
+  );
+}
+
+function renderIdPanel(){
+  return h('div',{className:'id-panel'},
+    h('div',{className:'id-title'},'✦ KARAKTER INTELEKTUAL\u00A0',h('span',{className:'id-badge'},h('span',{className:'dot'}),' AKTIF')),
+    h('p',{className:'id-note'},'DNA berpikir dan berbicaramu — tertanam di setiap respons. Sempurnakan kapanpun.'),
+    h('label',{className:'id-lbl'},'① POSISI EPISTEMIK'),h('textarea',{className:'id-ta',rows:'5',onInput:e=>S.iep=e.target.value},S.iep),
+    h('label',{className:'id-lbl'},'② NILAI ARGUMEN'),h('textarea',{className:'id-ta',rows:'4',onInput:e=>S.ivl=e.target.value},S.ivl),
+    h('label',{className:'id-lbl'},'③ TUJUAN BERBICARA'),h('textarea',{className:'id-ta',rows:'3',onInput:e=>S.ipu=e.target.value},S.ipu),
+    h('div',{className:'id-actions'},
+      h('button',{className:'btn-save',onClick:saveId},'Simpan →'),
+      h('button',{className:'btn-sec',onClick:()=>{S.iep=DEFAULT_ID.epistemic;S.ivl=DEFAULT_ID.values;S.ipu=DEFAULT_ID.purpose;render();}},'↺ Reset'),
+      h('button',{className:'btn-sec',style:{marginLeft:'auto'},onClick:()=>{S.showId=false;render();}},'✕ Tutup')
+    )
+  );
+}
+
+function renderMain(){
+  const pl=PLATFORMS.find(p=>p.id===S.platform),tn=TONES.find(t=>t.id===S.tone),ctxList=S.platform==='x'?CONTEXTS_X:CONTEXTS;
+  return h('div',{style:{display:'flex',flexDirection:'column',minHeight:'100vh'}},
+    h('header',{className:'hdr'},
+      h('div',{className:'hdr-logo'},'◈'),
+      h('div',{},h('div',{className:'hdr-title'},'RESONANSI'),h('div',{className:'hdr-sub'},'ASISTEN RESPONS INTELEKTUAL')),
+      h('div',{className:'hdr-actions'},
+        h('button',{className:'hdr-btn'+(S.showId?' on':''),onClick:()=>{if(!S.showId){S.iep=S.identity.epistemic;S.ivl=S.identity.values;S.ipu=S.identity.purpose;}S.showId=!S.showId;render();}},'✦ Karakter'),
+        h('button',{className:'hdr-btn',onClick:()=>{localStorage.removeItem('rk');S.apiKey='';S.screen='setup';render();}},'⚙')
+      )
+    ),
+    S.showId?renderIdPanel():null,
+    h('div',{className:'plat-bar'},...PLATFORMS.map(p=>h('button',{className:'plat-tab'+(S.platform===p.id?' active':''),style:{borderBottomColor:S.platform===p.id?p.color:'transparent',color:S.platform===p.id?p.color:'rgba(255,255,255,0.3)'},onClick:()=>setPlatform(p.id)},h('span',{innerHTML:p.svg}),p.id==='ig'?'IG':p.id==='wa'?'WA':'X'))),
+    h('div',{className:'content'},
+      h('p',{style:{fontSize:'10px',fontFamily:"'IBM Plex Mono',monospace",color:pl.color,opacity:'0.75'}},'↳ '+pl.hint),
+      h('div',{className:'fg'},h('span',{className:'fl'},'NADA BICARA'),
+        S.platform!=='x'
+          ?h('div',{className:'tone-grid'},...TONES.map(t=>h('button',{className:'tone-btn',style:{borderColor:S.tone===t.id?'#D4AF37':'rgba(255,255,255,0.09)',background:S.tone===t.id?'rgba(212,175,55,0.11)':'transparent',color:S.tone===t.id?'#D4AF37':'rgba(255,255,255,0.42)'},onClick:()=>{S.tone=t.id;render();}},h('span',{className:'tone-name'},t.name),h('span',{className:'tone-desc'},t.desc))))
+          :h('div',{className:'x-badge'},h('div',{className:'x-badge-hdr'},h('span',{style:{fontSize:'13px',color:'#E7E9EA'}},'✦'),h('span',{className:'x-badge-title'},'Mode X — Nada Terintegrasi')),h('p',{className:'x-badge-body'},'Keempat nada bekerja sekaligus: filosofis dalam pijakan, kritis dalam pembedahan asumsi, tenang dalam sikap, cerdas dalam diksi.'),h('div',{className:'x-tags'},...['Filosofis','Kritis','Tenang','Cerdas'].map(t=>h('span',{className:'x-tag'},t))))
+      ),
+      h('div',{className:'fg'},h('span',{className:'fl'},'TUJUAN RESPONS'),
+        h('div',{className:'ctx-row'},...ctxList.map(c=>S.platform==='x'
+          ?h('button',{className:'ctx-btn-x',style:{borderColor:S.context===c.id?'#E7E9EA':'rgba(255,255,255,0.09)',color:S.context===c.id?'#E7E9EA':'rgba(255,255,255,0.36)',background:S.context===c.id?'rgba(231,233,234,0.07)':'transparent'},onClick:()=>{S.context=c.id;render();}},h('span',{className:'ctx-btn-x-name'},c.label),h('span',{className:'ctx-btn-x-desc'},c.desc))
+          :h('button',{className:'ctx-btn',style:{borderColor:S.context===c.id?'#8AB4F8':'rgba(255,255,255,0.09)',color:S.context===c.id?'#8AB4F8':'rgba(255,255,255,0.36)',background:S.context===c.id?'rgba(138,180,248,0.09)':'transparent'},onClick:()=>{S.context=c.id;render();}},c.label)
+        ))
+      ),
+      h('div',{className:'divider'}),
+      h('div',{className:'fg'},
+        h('span',{className:'fl'},'PESAN / PERTANYAAN YANG DITERIMA'),
+        h('textarea',{className:'ta-main',rows:'5',placeholder:'Tempel di sini pesan, pertanyaan, atau komentar yang ingin kamu respons...',onInput:e=>{S.input=e.target.value;render();}},S.input),
+        h('div',{className:'input-meta'},
+          h('span',{className:'char-ct'},S.input.length+' karakter'),
+          h('button',{className:'btn-gen',onClick:generate,disabled:!S.input.trim()||S.loading},S.loading?h('span',{style:{display:'flex',alignItems:'center',gap:'8px'}},h('span',{className:'spin'},'◌'),'Merumuskan...'):'Hasilkan →')
+        )
+      ),
+      h('div',{className:'fg'},
+        h('span',{className:'fl'},'KONTEKS SITUASIONAL ',h('span',{style:{fontWeight:'400',color:'rgba(255,255,255,0.17)'}},'OPSIONAL')),
+        h('textarea',{className:'ta-extra',rows:'2',placeholder:'Misal: lawan bicara teman lama, topik sensitif...',onInput:e=>S.extra=e.target.value},S.extra)
+      ),
+      (S.loading||S.result)?h('div',{className:'out-box'},
+        h('div',{className:'out-hdr'},
+          h('div',{className:'out-meta'},h('span',{innerHTML:pl.svg,style:{color:pl.color,width:'18px',height:'18px',display:'inline-block'}}),h('span',{className:'out-lbl'},pl.label+' · '+(S.platform==='x'?'GABUNGAN':tn.name.toUpperCase()))),
+          h('div',{style:{display:'flex',gap:'8px',alignItems:'center'}},
+            S.result&&S.platform==='x'?h('span',{style:{fontSize:'10px',fontFamily:"'IBM Plex Mono',monospace",color:S.result.length>280?'#FF6B6B':'rgba(255,255,255,0.26)'}},S.result.length+'/280'):null,
+            S.result?h('button',{className:'btn-copy',onClick:copyResult},S.copied?'✓ Tersalin':'⊕ Salin'):null
+          )
+        ),
+        h('div',{className:'out-text'},S.loading&&!S.result?h('span',{style:{color:'rgba(255,255,255,0.26)',fontStyle:'italic'}},h('span',{className:'spin',style:{marginRight:'8px'}},'◌'),'Sedang merumuskan...'):h('span',{},S.tt,!S.tdone?h('span',{className:'blink'},'▌'):null)),
+        S.result?h('div',{className:'out-actions'},h('button',{className:'btn-regen',onClick:generate},'↺ Ulang'),h('button',{className:'btn-clear',onClick:()=>{S.result='';S.tt='';S.input='';S.extra='';render();}},'✕ Baru')):null
+      ):h('div',{className:'empty'},h('div',{className:'empty-icon'},'◈'),h('p',{className:'empty-txt'},'Pilih platform, nada, dan tujuan.',h('br',{}),'Tempel pesan. Hasilkan respons yang jernih.')),
+      S.history.length?h('div',{className:'fg'},
+        h('div',{className:'hist-toggle'},h('span',{className:'fl'},'RIWAYAT'),h('button',{className:'btn-hist',onClick:()=>{S.showHist=!S.showHist;render();}},S.showHist?'Tutup':S.history.length+' respons')),
+        S.showHist?h('div',{className:'hist-list'},...S.history.map((item)=>{const hp=PLATFORMS.find(p=>p.id===item.platform);return h('div',{className:'hist-item',style:{borderColor:hp.border},onClick:()=>{S.input=item.input;S.platform=item.platform;S.tone=item.tone;S.context=item.context;S.result=item.result;S.tt=item.result;S.tdone=true;S.showHist=false;render();}},h('span',{className:'hist-plat',style:{color:hp.color}},hp.label),h('p',{className:'hist-snip'},'"'+item.input.slice(0,70)+(item.input.length>70?'…':'')+'"'));})):null
+      ):null
+    ),
+    h('div',{className:'footer'},'RESONANSI · Berpikir sebelum menjawab adalah kebajikan intelektual')
+  );
+}
+
+function render(){
+  const app=document.getElementById('app');app.innerHTML='';
+  app.appendChild(S.screen==='setup'?renderSetup():renderMain());
+}
+render();
+</script>
+</body>
+</html>
