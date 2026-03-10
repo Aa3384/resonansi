@@ -197,9 +197,12 @@ async function generate(){
 }
 
 function checkKey(){
-  const k=S.sk.trim();
-  if(!k.startsWith('sk-ant-')){S.serr="Format tidak valid. Harus dimulai dengan 'sk-ant-'";render();return;}
-  localStorage.setItem('rk',k);S.apiKey=k;S.screen='main';render();
+  var inp = document.getElementById('apiKeyInput');
+  var k = inp ? inp.value.trim() : S.sk.trim();
+  if(!k){alert('Masukkan API key terlebih dahulu.');return;}
+  if(!k.startsWith('sk-ant-')){alert("Format tidak valid. API key harus dimulai dengan 'sk-ant-'");return;}
+  try{localStorage.setItem('rk',k);}catch(e){}
+  S.apiKey=k;S.screen='main';render();
 }
 
 function copyResult(){
@@ -233,18 +236,16 @@ function h(tag,attrs,...kids){
 }
 
 function renderSetup(){
-  return h('div',{className:'screen'},
-    h('div',{className:'card fade-up'},
-      h('div',{className:'logo'},'◈'),
-      h('div',{className:'title'},'RESONANSI'),
-      h('div',{className:'subtitle'},'ASISTEN RESPONS INTELEKTUAL'),
-      h('label',{className:'lbl'},'API KEY ANTHROPIC'),
-      h('input',{className:'inp',type:'password',placeholder:'sk-ant-api03-...',value:S.sk,onInput:e=>S.sk=e.target.value,onKeydown:e=>{if(e.key==='Enter')checkKey();},autocomplete:'off',spellcheck:'false'}),
-      h('p',{className:'note',innerHTML:'Buat API key gratis di <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key. Tersimpan hanya di perangkatmu.'}),
-      S.serr?h('p',{className:'err'},S.serr):null,
-      h('button',{className:'btn-gold',onClick:checkKey,disabled:!S.sk.trim()||S.sload},S.sload?'Memeriksa...':'Mulai →')
-    )
+  var card = h('div',{className:'card fade-up'},
+    h('div',{className:'logo'},'◈'),
+    h('div',{className:'title'},'RESONANSI'),
+    h('div',{className:'subtitle'},'ASISTEN RESPONS INTELEKTUAL'),
+    h('label',{className:'lbl'},'API KEY ANTHROPIC'),
+    h('input',{className:'inp',id:'apiKeyInput',type:'password',placeholder:'sk-ant-api03-...',autocomplete:'off'}),
+    h('p',{className:'note',innerHTML:'Buat API key gratis di <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key.'}),
+    h('button',{className:'btn-gold',onClick:checkKey},'Mulai →')
   );
+  return h('div',{className:'screen'},card);
 }
 
 function renderIdPanel(){
@@ -322,6 +323,9 @@ function renderMain(){
 }
 
 function render(){
+  // Always sync screen state with localStorage
+  if(!S.apiKey && localStorage.getItem('rk')){S.apiKey=localStorage.getItem('rk');S.screen='main';}
+  if(!S.apiKey && S.screen==='main'){S.screen='setup';}
   const app=document.getElementById('app');app.innerHTML='';
   app.appendChild(S.screen==='setup'?renderSetup():renderMain());
 }
