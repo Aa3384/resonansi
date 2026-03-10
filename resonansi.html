@@ -188,12 +188,14 @@ async function generate(){
   if(!S.input.trim()||S.loading)return;
   S.loading=true;S.result='';S.copied=false;S.tt='';S.tdone=false;render();
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1024,messages:[{role:'user',content:buildPrompt()}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1024,messages:[{role:'user',content:buildPrompt()}]})});
     const d=await res.json();
-    const text=d.content?.map(b=>b.text||'').join('')||'Terjadi kesalahan.';
+    if(d.error){S.result='Error: '+d.error.message;S.tt=S.result;S.tdone=true;S.loading=false;render();return;}
+    if(!d.content||!d.content.length){S.result='Error: Respons kosong dari server. ('+JSON.stringify(d)+')';S.tt=S.result;S.tdone=true;S.loading=false;render();return;}
+    const text=d.content.map(b=>b.text||'').join('');
     S.result=text;S.history=[{input:S.input,platform:S.platform,tone:S.tone,context:S.context,result:text},...S.history.slice(0,9)];
     S.loading=false;render();startTW(text);
-  }catch{S.result='Gagal terhubung. Periksa koneksi internet.';S.tt=S.result;S.tdone=true;S.loading=false;render();}
+  }catch(e){S.result='Gagal terhubung: '+e.message;S.tt=S.result;S.tdone=true;S.loading=false;render();}
 }
 
 function checkKey(){
